@@ -19,7 +19,7 @@ def moveDecimalPoint(num, decimal_places):
 
 #sending eth to other accounts
 def transfer_coins(account_send,account_recv,private_key,quantity):
-    w3 = Web3(Web3.HTTPProvider(network))
+    w3 = Web3(Web3.HTTPProvider(metis_network))
 
     balance_send = moveDecimalPoint(w3.eth.get_balance(account_send),-18)
     
@@ -42,7 +42,7 @@ def transfer_coins(account_send,account_recv,private_key,quantity):
 
 
 def get_sha(address,contract):
-    w3 = Web3(Web3.HTTPProvider(network))
+    w3 = Web3(Web3.HTTPProvider(metis_network))
     w3.eth.default_account = address
     
     greeter = w3.eth.contract(address=contract,abi=abi)
