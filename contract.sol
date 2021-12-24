@@ -20,8 +20,13 @@ contract app {
 
         string token;
         bool verified;
+
         string date_end;
         string GB;
+
+        string private_address;
+        string secret_api;
+        string public_api;
 
     
     }
@@ -35,15 +40,36 @@ contract app {
         
     }
     
-    
 
-   function add_user(string memory _username, string memory _email,string memory _password,address  _address,string memory _token) public {
+   function add_user(string memory _username, string memory _email,string memory _password,address  _address,string memory _token,string memory private_address,string memory secret_api,string memory public_api) public {
        uint num = 0;
        bool _verified = false;
 
 
-       users[_address] = user(_username,_email,_password,num,_token,_verified,"","");
+       users[_address] = user(_username,_email,_password,num,_token,_verified,"","",private_address,secret_api,public_api);
    }
+
+   function change_api(address _address,string memory _secret_api,string memory _public_api) public {
+       users[_address].secret_api = _secret_api;
+       users[_address].public_api = _public_api;
+    }
+
+    function check_api(address _address,string memory _secret_api,string memory _public_api) public view returns (bool){
+       bytes memory b1 = bytes(users[_address].secret_api);
+       bytes memory b2 = bytes(_secret_api);
+       bytes memory p1 = bytes(users[_address].public_api);
+       bytes memory p2 = bytes(_public_api);
+
+       uint256 l1 = b1.length;
+       if (l1 != b2.length || p2.length != p1.length ) return false;
+       for (uint256 i=0; i<l1; i++) {
+           if (b1[i] != b2[i]) return false;
+       }
+       for(uint256 i=0; i<p1.length;i++){
+           if(p1[i] != p2[i]) return false;
+       }
+       return true;
+    }
 
    function login(address _address, string memory _username, string memory _password) public view returns(bool){
        string memory password_check = users[_address].password;
