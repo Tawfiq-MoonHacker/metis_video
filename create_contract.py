@@ -32,7 +32,7 @@ def create_contract(address,hash):
     abi = contract_interface['abi']
     
     
-    w3 = Web3(Web3.HTTPProvider(network))
+    w3 = Web3(Web3.HTTPProvider(metis_network))
     
     
     # set pre-funded account as sender
