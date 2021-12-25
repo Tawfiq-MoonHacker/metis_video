@@ -8,8 +8,8 @@ from web3 import Web3
 import solcx
 
 
-def create_contract(address,hash):
-    install_solc(version='0.7.0')
+def create_contract(address):
+    install_solc(version='0.8.0')
     f = open("contract.sol",'r')
     solid = f.read()
     
@@ -17,7 +17,7 @@ def create_contract(address,hash):
     compiled_sol = solcx.compile_source(
         solid,
         output_values=["abi", "bin-runtime","bin"],
-        solc_version="0.7.0")
+        solc_version="0.8.0")
     
     
     metis_network = "https://andromeda.metis.io/?owner=1088"
@@ -40,7 +40,7 @@ def create_contract(address,hash):
     
     Greeter = w3.eth.contract(abi=abi, bytecode=bytecode)
     
-    tx_hash = Greeter.constructor(hash).transact()
+    tx_hash = Greeter.constructor().transact()
     
     
     # Wait for the transaction to be mined, and get the transaction receipt
