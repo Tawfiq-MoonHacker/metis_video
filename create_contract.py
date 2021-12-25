@@ -1,10 +1,6 @@
 from solcx import install_solc
 from solcx import compile_source
 from web3 import Web3
-
-
-
-
 import solcx
 
 
@@ -42,7 +38,6 @@ def create_contract(address):
     
     tx_hash = Greeter.constructor().transact()
     
-    
     # Wait for the transaction to be mined, and get the transaction receipt
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     
@@ -51,4 +46,3 @@ def create_contract(address):
     
     return tx_receipt.contractAddress
     
-
