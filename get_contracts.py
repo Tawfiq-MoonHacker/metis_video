@@ -146,6 +146,13 @@ def get_token(address):
     greeter = w3.eth.contract(address = contract,abi =abi)
     return greeter.functions.get_token(address).call()
 
+def get_addresses():
+    w3 = Web3(Web3.HTTPProvider(metis_network))
+    w3.eth.default_account = main_address
+    
+    greeter = w3.eth.contract(address = contract,abi = abi)
+    return greeter.function.get_addresses().call()
+
 # result = add_video("sdfdf","0xAB36979F5353131de195464d213C76AaDFd5a3EC","date","nameadf","url1")
 
 #result = getvideo("0xAB36979F5353131de195464d213C76AaDFd5a3EC",0)
