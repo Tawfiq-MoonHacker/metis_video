@@ -90,6 +90,21 @@ def get_subscription(address):
     greeter = w3.eth.contract(address = contract,abi = abi)
     return greeter.functions.get_subscription(address).call()
 
+
+def set_GB(address,gb):
+    w3 = Web3(Web3.HTTPProvider(metis_network))
+    w3.eth.default_account = main_address
+    
+    greeter = w3.eth.contract(address = contract,abi = abi)
+    greeter.functions.set_GB(address,gb).transact()
+
+def get_GB(address):
+    w3 = Web3(Web3.HTTPProvider(metis_network))
+    w3.eth.default_account = main_address
+    
+    greeter = w3.eth.contract(address = contract,abi = abi)
+    return greeter.functions.get_GB(address).call()
+
 # result = add_video("sdfdf","0xAB36979F5353131de195464d213C76AaDFd5a3EC","date","nameadf","url1")
 
 result = getvideo("0xAB36979F5353131de195464d213C76AaDFd5a3EC",0)
