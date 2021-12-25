@@ -104,6 +104,9 @@ contract app {
    function add_subscription(address _address,string memory date) public {
        users[_address].date_end = date;
    }
+   function get_subscription(address _address) public view{
+       return users[_address].date_end;
+   }
    
    function add_video(string memory _hash, address _address,string memory _date,string memory _name,string memory _url) public {
        videos[_address].push(video(_hash,_name,_date,_url));
