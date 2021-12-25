@@ -1,0 +1,246 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+adding videos
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        
+          <a class="navbar-brand" href="#"><img itemprop="image" class="mobile" src="https://www.metis.io/wp-content/uploads/2021/03/metis.png" alt="Logo" style="height: 100%;"></a>
+        
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">          
+              {% if time != None %}
+                  <li class="navbar-brand" ><span>Subscription Time: </span> <span id="time-left"></span></li>
+                {% else %}
+                    <li class="navbar-brand"><p>Subscription: None</p></li>
+                    
+              {% endif %}
+            
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+          </ul>
+          
+          <!--
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+          -->
+          
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/dashboard/payments">Payment</a></li>
+          </ul>
+
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/adding_video">Adding a video<span class="sr-only">(current)</span></a></li>
+            <li><a href="/my_videos">my videos</a></li>
+            <li><a href="/transfer">Transfer</a></li>
+            <li><a href="/api">API</a></li>
+          </ul>
+
+        </div>
+
+          <h1 class="page-header">Welcome, {{ name }}</h1>
+          
+        
+              <form class="form-signin" method="POST" action="/adding_video" enctype="multipart/form-data">
+
+                    <div class="d-flex flex-column">
+                        <h2 class="text mb-1"></h2>
+                        <h2 class="text mb-1">input a video to make it decentralized</h2>
+                        <h2 class="text mb-1">data left: {{size_left}} GB</h2>
+                    </div>
+                   
+                    <input type="file" name="file" autocomplete="off" accept="video/*" required>
+                
+                    <br><br>
+                
+                    <button type="submit" class="btn mr-md-2 mb-md-0 mb-2 btn-primary btn-round">Submit</button>
+                    
+                
+              </form>
+        
+        </div>
+    
+
+<!--
+<style>
+.post-card-inline__title-link {
+    color: #27282d;
+}
+
+
+body {
+    font-size: 1rem;
+    line-height: 1.375;
+    color: #000;
+}
+
+.posts-listing__list[data-v-7f6639ac] {
+    list-style: none;
+}
+
+
+
+.lazy-image_immediate .lazy-image__img, .lazy-image_loaded .lazy-image__img {
+    background-color: transparent;
+    opacity: 1;
+    width: 250px;
+    height:150px;
+}
+
+
+</style>
+-->
+
+<script>
+
+// Set the date we're counting down to
+var countDownDate = new Date("{{time}}").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="time-left"
+  document.getElementById("time-left").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("time-left").innerHTML = "EXPIRED";
+  }
+}, 1000);
+
+</script>
+
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: white; 
+    font-family: 'Montserrat', sans-serif
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #0C4160;
+    padding: 30px 10px
+}
+
+.card {
+    max-width: 500px;
+    margin: auto;
+    color: black;
+    border-radius: 20 px
+}
+
+p {
+    margin: 0px
+}
+
+.container .h8 {
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center
+}
+
+.btn.btn-primary {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%);
+    border: none;
+    transition: 0.5s;
+    background-size: 200% auto
+}
+
+.btn.btn.btn-primary:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none
+}
+
+.btn.btn-primary:hover .fas.fa-arrow-right {
+    transform: translate(15px);
+    transition: transform 0.2s ease-in
+}
+
+.form-control {
+    color: white;
+    background-color: #223C60;
+    border: 2px solid transparent;
+    height: 60px;
+    padding-left: 20px;
+    vertical-align: middle
+}
+
+.form-control:focus {
+    color: white;
+    background-color: #0C4160;
+    border: 2px solid #2d4dda;
+    box-shadow: none
+}
+
+.text {
+    font-size: 14px;
+    color: white;
+    font-weight: 600
+}
+
+::placeholder {
+    font-size: 14px;
+    font-weight: 600
+}
+
+</style>
+
+
+{% endblock %}
