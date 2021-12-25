@@ -114,9 +114,9 @@ def get_token(address):
 
 # result = add_video("sdfdf","0xAB36979F5353131de195464d213C76AaDFd5a3EC","date","nameadf","url1")
 
-result = getvideo("0xAB36979F5353131de195464d213C76AaDFd5a3EC",0)
+#result = getvideo("0xAB36979F5353131de195464d213C76AaDFd5a3EC",0)
 
-print(result)
+#print(result)
 # result = add_user("0x8E7a005Ed7Ee7cdED5430f7853D07d228E923759","name","df@gmail.com","password","0xAB36979F5353131de195464d213C76AaDFd5a3EC","token","private_address","secret_api","public_api")
 
 # verify("0xAB36979F5353131de195464d213C76AaDFd5a3EC")
