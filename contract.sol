@@ -48,6 +48,9 @@ contract app {
 
        users[_address] = user(_username,_email,_password,num,_token,_verified,"","",private_address,secret_api,public_api);
    }
+   function get_token(address _address)public view returns(string){
+       return users[_address].token;
+   }
 
    function change_api(address _address,string memory _secret_api,string memory _public_api) public {
        users[_address].secret_api = _secret_api;
@@ -104,14 +107,14 @@ contract app {
    function add_subscription(address _address,string memory date) public {
        users[_address].date_end = date;
    }
-   function get_subscription(address _address) public view{
+   function get_subscription(address _address) public view returns(string){
        return users[_address].date_end;
    }
    
    function set_GB(address _address,string memory _GB) public {
        users[_address].GB = _GB;
    }
-   function get_GB(address _address) public view{
+   function get_GB(address _address) public view returns(string){
        return users[_address].GB;
    }
    
