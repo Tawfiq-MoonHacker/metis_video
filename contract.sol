@@ -108,6 +108,13 @@ contract app {
        return users[_address].date_end;
    }
    
+   function set_GB(address _address,string memory _GB) public {
+       users[_address].GB = _GB;
+   }
+   function get_GB(address _address) public view{
+       return users[_address].GB;
+   }
+   
    function add_video(string memory _hash, address _address,string memory _date,string memory _name,string memory _url) public {
        videos[_address].push(video(_hash,_name,_date,_url));
        users[_address].num++;
