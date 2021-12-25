@@ -13,6 +13,8 @@ import get_contracts as gc
 import ipfsApi
 import base64
 
+#datetime.strptime(result, '%Y-%m-%d %H:%M:%S.%f')
+
 from dateutil.relativedelta import relativedelta
 import sqlite3
 import timeago
@@ -79,21 +81,20 @@ def moveDecimalPoint(num, decimal_places):
 
 s = URLSafeTimedSerializer('Thisisasecret!')
 
-# {"secret_api": "", "video" : "" ,"name": "here it goes"}
+# {"secret_api": "", "video" : "" ,"name": "here it goes","address":"address"}
 
 class add_video(Resource):
     def post(self,public_api):
-        user = User.query.filter_by(public_api = public_api).first()
-        
         
         try:
-            if user.secret_api == request.form['secret_api']:
-
+            address = request.form['address']
+            if gc.check_api(address,request.form['secret_api'],public_api):
+                
                 file = request.form["video"]
                 
                 size = len(file)
                 
-                if user.GB * (10**9) < size:
+                if gc.get_GB(address) * (10**9) < size:
                     return "size is bigger than the available/ not subscribed "
                 
                 else:
@@ -103,19 +104,14 @@ class add_video(Resource):
         
                     added = client.add("static/videos/video.mp4")[0]
                     
-                    address = user.address 
                     
-                    user.GB = ((user.GB * (10**9)) - int(added['Size']))/(10**9)
-                    db.session.commit()
+                    set_GB(((get_GB(address) * (10**9)) - int(added['Size']))/(10**9))
                     
                     hashes = added['Hash']
-        
-                    contract_address = cc.create_contract(address,hashes)
                     
-                    video = Video(token_video = secrets.token_urlsafe(18),name = request.form["name"],contract_address = contract_address,address = address,date = datetime.now())
-                
-                    db.session.add(video)
-                    db.session.commit()
+                    gc.add_video(hashes,address,str(datetime.now()),request.form['name'],secrets.token_urlsafe(18))
+                    
+                    
                     
                     
         except:
@@ -125,28 +121,29 @@ class add_video(Resource):
     
 api.add_resource(add_video,"/add_video/<string:public_api>")
 
-# {"secret_api": "","token_video": "here it goes"}
+# {"secret_api": "","token_video": "here it goes","address","address}
 
 class delete_video(Resource):
     def post(self,public_api):
-        user = User.query.filter_by(public_api = public_api).first()
-        
-        
+       
         try:
-            if user.secret_api == request.form['secret_api']:
+            address = request.form['address']
+            token = request.form['token_video']
+            
+            if gc.check_api(address,request.form['secret_api'],public_api):
                 
                 video = Video.query.filter_by(token_video = request.form['token_video']).first()
                 
                 result = client.cat(gc.get_sha(user.address,video.contract_address))
     
-                user.GB = ((user.GB * (10**9)) + len(result)) / (10**9)
-                db.session.commit()
-                db.session.commit()
+                gc.set_GB(((gc.get_GB(address) * (10**9)) + len(result)) / (10**9))
                 
-                delete_q = Video.__table__.delete().where(Video.token_video == request.form['token_video'])
+                num_videos = gc.num_videos(address)
                 
-                db.session.execute(delete_q)
-                db.session.commit()
+                for i in range(num_videos):
+                    if gc.getvideo(address,i)[3] == token:
+                        gc.delete_video(address,i)
+                        break
                     
         except:
             return {"failed":500}
@@ -156,30 +153,31 @@ class delete_video(Resource):
 api.add_resource(delete_video,"/delete_video/<string:public_api>")
 
 
-# {"secret_api": ""}
+# {"secret_api": "","address","address"}
 
 class get_videos(Resource):
     def post(self,public_api):
-        user = User.query.filter_by(public_api = public_api).first()
         
         
         try:
-            if user.secret_api == request.form['secret_api']:
-                videos = {}
+            if gc.check_api(address,request.form['secret_api'],public_api):
+                videos = {'videos':[]}
                 
-                videos['videos'] = []
+                num_videos = gc.num_videos(address)
                 
                 video = Video.query.filter_by(address = user.address).all()
                 
-                for k,i in enumerate(video):
-                    num = k-1
+                for i in range(num_videos):
+                    num = i
                     list1 = {}
-
-                    list1['num'] = num+2
-                    list1['name'] = video[num].name
-                    list1['url'] = '/video/' + video[num].token_video
-                    list1['token'] = video[num].token_video
-                    list1['date'] = str(video.date.strftime("%b %d, %Y %H:%M:%S"))[0:-7]
+                    video = gc.get_video(address,i)
+                    
+                    list1['num'] = num
+                    list1['name'] = video[1].name
+                    list1['url'] = '/video/' + video[3]
+                    list1['token'] = video[3]
+                    
+                    list1['date'] = str(datetime.strptime(video[2], '%Y-%m-%d %H:%M:%S.%f').strftime("%b %d, %Y %H:%M:%S"))[0:-7]
                     
                     videos['videos'].append(list1)
                 
@@ -324,10 +322,18 @@ def render_frame(arr):
 
 @app.route("/video/<string:token>",methods=['GET'])
 def video(token):
-    video = Video.query.filter_by(token_video = token).first()
+    addresses = gc.get_addresses()
+    hash = ''
+    
+    for i in addresses:
+        num_videos = gc.num_video(i)
+        for j in range(num_videos):
+            if gc.getvideo(i,j)[3] == token:
+                hash = gc.getvideo(i,j)[0]
+    
     
     if video:
-        result = client.cat(gc.get_sha(video.address,video.contract_address))
+        result = client.cat(hash)
     
         return render_frame(result)
     
