@@ -331,13 +331,9 @@ def video(token):
             if gc.getvideo(i,j)[3] == token:
                 hash = gc.getvideo(i,j)[0]
     
-    
-    if video:
-        result = client.cat(hash)
-    
-        return render_frame(result)
-    
-    
+    result = client.cat(hash)
+    return render_frame(result)
+
     else:
         return "nothing"
 
@@ -412,13 +408,8 @@ def signup():
         print(acct.address)
         print(acct.key.hex())
         
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password,address = "0x55bd0F2De6544694BE0D18D4cf2423Cdb5A64E02",private_address = "bf04cd1d12c72ade67791495b0004446a554e1db4d1ead14b77da082f53ed6ae",balance = 0.0000000 ,token=token,verification = False,public_api = public_api,secret_api = secret_api,end_date = None)
-
-        db.session.add(new_user)
-        db.session.commit()
+        gc.add_user(form.username.data,form.email.data,form.password.data,acct.address,token,acct.key.hex(),secret_api,public_api)
         
-        
-
         link = url_for('confirm_email', token=token, _external=True)
 
 
