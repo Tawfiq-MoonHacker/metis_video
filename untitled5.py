@@ -58,7 +58,7 @@ def change_api(address,secret_api,public_api):
     w3.eth.default_account = main_address
     
     greeter = w3.eth.contract(address = contract,abi = abi)
-    return greeter.functions.change_api(address,secret_api,public_api).transact()
+    greeter.functions.change_api(address,secret_api,public_api).transact()
 
 
 def check_api(address,secret_api,public_api):
@@ -67,6 +67,13 @@ def check_api(address,secret_api,public_api):
     
     greeter = w3.eth.contract(address = contract,abi = abi)
     return greeter.functions.check_api(address,secret_api,public_api).call()
+
+def add_subscription(address,date):
+    w3 = Web3(Web3.HTTPProvider(metis_network))
+    w3.eth.default_account = main_address
+    
+    greeter = w3.eth.contract(address = contract,abi = abi)
+    greeter.functions.add_subscription(address,date).transact()
 
 # result = add_video("sdfdf","0xAB36979F5353131de195464d213C76AaDFd5a3EC","date","nameadf","url1")
 
