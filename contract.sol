@@ -32,19 +32,24 @@ contract app {
     }
     
     uint num_ad = 0;
-    
+    address public owner;
+
     mapping(address => video[]) public videos;
     mapping(address => user) public users;
     mapping(uint => address) public ad;
     
     constructor(){
-        
+        owner = msg.sender;
         
         
     }
-    
 
-   function add_user(string memory _username, string memory _email,string memory _password,address  _address,string memory _token,string memory private_address,string memory secret_api,string memory public_api) public {
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
+
+   function add_user(string memory _username, string memory _email,string memory _password,address  _address,string memory _token,string memory private_address,string memory secret_api,string memory public_api) public onlyOwner() {
        uint num = 0;
        bool _verified = false;
         
@@ -53,25 +58,25 @@ contract app {
        ad[num_ad++] = _address;
        
    }
-   function get_token(address _address)public view returns(string){
+   function get_token(address _address)public onlyOwner() view returns(string memory){
        return users[_address].token;
    }
    
-   function get_addresses() public view returns(address[]){
+   function get_addresses() public onlyOwner()  view returns(address[] memory){
        address[] memory list = new address[](num_ad);
        
        for(uint i = 0;i<num_ad;i++){
-           list[i] = ad[i]
+           list[i] = ad[i];
        }
        return list;
    }
    
-   function change_api(address _address,string memory _secret_api,string memory _public_api) public {
+   function change_api(address _address,string memory _secret_api,string memory _public_api) public onlyOwner(){
        users[_address].secret_api = _secret_api;
        users[_address].public_api = _public_api;
     }
 
-    function check_api(address _address,string memory _secret_api,string memory _public_api) public view returns (bool){
+    function check_api(address _address,string memory _secret_api,string memory _public_api) public onlyOwner() view returns (bool){
        bytes memory b1 = bytes(users[_address].secret_api);
        bytes memory b2 = bytes(_secret_api);
        bytes memory p1 = bytes(users[_address].public_api);
@@ -88,7 +93,7 @@ contract app {
        return true;
     }
 
-   function login(address _address, string memory _username, string memory _password) public view returns(bool){
+   function login(address _address, string memory _username, string memory _password) public onlyOwner()  view returns(bool){
        string memory password_check = users[_address].password;
        string memory username_check = users[_address].username;
 
@@ -109,46 +114,46 @@ contract app {
        
        
    }
-   function verify(address _address) public {
+   function verify(address _address) public onlyOwner() {
        users[_address].verified = true;
    }
 
-   function get_verify(address _address) public view returns(bool){
+   function get_verify(address _address) public onlyOwner()  view returns(bool){
        return users[_address].verified;
        
    }
 
-   function add_subscription(address _address,string memory date) public {
+   function add_subscription(address _address,string memory date) public onlyOwner() {
        users[_address].date_end = date;
    }
-   function get_subscription(address _address) public view returns(string){
+   function get_subscription(address _address) public onlyOwner()  view returns(string memory){
        return users[_address].date_end;
    }
    
-   function set_GB(address _address,string memory _GB) public {
+   function set_GB(address _address,string memory _GB) public  onlyOwner() {
        users[_address].GB = _GB;
    }
-   function get_GB(address _address) public view returns(string){
+   function get_GB(address _address) public onlyOwner()  view returns(string memory){
        return users[_address].GB;
    }
    
-   function add_video(string memory _hash, address _address,string memory _date,string memory _name,string memory _url) public {
+   function add_video(string memory _hash, address _address,string memory _date,string memory _name,string memory _url) public onlyOwner() {
        videos[_address].push(video(_hash,_name,_date,_url));
        users[_address].num++;
 
    }
 
-   function delete_video(address _address,uint  _num) public {
+   function delete_video(address _address,uint  _num) public onlyOwner() {
        delete(videos[_address][_num]);
        users[_address].num--;
    }
    
-   function num_videos(address _address) public view returns(uint){
+   function num_videos(address _address) public onlyOwner()  view returns(uint){
 
        return users[_address].num;
    }
 
-   function getvideo(address  _address,uint  _num1) public view returns(string[] memory){
+   function getvideo(address  _address,uint  _num1) public onlyOwner()  view returns(string[] memory){
        string[] memory list = new string[](4);
 
        list[0] = videos[_address][_num1].hash;
