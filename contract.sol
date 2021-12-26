@@ -8,8 +8,6 @@ contract app {
         string name;
         string date_added;
         string url;
-
-
     }
     struct user{
 
@@ -27,12 +25,10 @@ contract app {
         string private_address;
         string secret_api;
         string public_api;
-
-    
     }
     
     uint num_ad = 0;
-    address public owner;
+    address private owner;
 
     mapping(address => video[]) public videos;
     mapping(address => user) public users;
